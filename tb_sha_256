@@ -1,0 +1,73 @@
+`timescale 1ns / 1ps
+//////////////////////////////////////////////////////////////////////////////////
+// Company: 
+// Engineer: 
+// 
+// Create Date: 06.02.2025 17:52:41
+// Design Name: 
+// Module Name: tb_sha_256A
+// Project Name: 
+// Target Devices: 
+// Tool Versions: 
+// Description: 
+// 
+// Dependencies: 
+// 
+// Revision:
+// Revision 0.01 - File Created
+// Additional Comments:
+// 
+//////////////////////////////////////////////////////////////////////////////////
+
+
+module tb_sha_256();
+
+    // Declare signals for the testbench
+    reg clk;
+    reg rst;
+    reg [511:0] data_in;
+    wire [255:0] hash_out;
+    wire [6:0] round_counter;
+    // Instantiate the SHA-256 module
+    sha_256 uut (.clk(clk), 
+    .rst(rst), 
+    .data_in(data_in),
+    .hash_out(hash_out),
+    .round_counter(round_counter));
+
+    // Generate clock signal
+    always begin
+        clk = 0;
+        #5 clk = 1;
+        #5 clk = 0;
+    end
+
+    // Test procedure
+    initial begin
+        // Initialize signals
+        rst = 0;
+        data_in = 512'b0;
+
+        // Apply reset
+        rst = 1;
+        #10 rst = 0;
+
+        // Test vector 1: Input data
+        data_in = 512'h6a09e667bb67ae853c6ef372a54ff53a510e527f9b05688c1f83d9ab5be0cd19; // Example input data
+        #100;  // Wait for a few cycles to observe the hash computation
+
+        // Test vector 2: Another set of input data
+  //      data_in = 512'h428a2f9871374491b5c0fbcfe9b5dba53956c25b59f111f1923f82a4ab1c5ed5; // Another input
+        #100;  // Wait for a few cycles to observe the hash computation
+
+        // Finish simulation after testing
+        $finish;
+    end
+
+    // Monitor the hash output
+    initial begin
+        $monitor("Time = %t, hash_out = %h", $time, hash_out);
+        $display("round_counter=%h", round_counter);
+    end
+
+endmodule
